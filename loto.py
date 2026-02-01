@@ -487,6 +487,13 @@ LOTO_JOKES = {
         "pugacheva": "Двадцать один! Двадцать первый век! Мы в будущем! Двадцать один!",
         "vinni": "Двадцать один... Очко! Хватит, больше мёда не влезет! Двадцать один!",
         "zhirinovsky": "Двадцать один! Совершеннолетие везде! Равенство! Двадцать один!",
+        "monetochka": "Двадцать один! Официально взрослая! Можно в клуб! Двадцать один!",
+        "gorshok": "Двадцать один! Очко! Казино в аду! Ха-ха! Двадцать один!",
+        "vysotsky": "Двадцать один... Блэкджек! Жизнь - азартная игра! Двадцать один!",
+        "shnurov": "Двадцать один! Очко! Как в казино! Поехали! Двадцать один!",
+        "kirkorov": "Двадцать один! Двадцать первый век моей славы! Двадцать один!",
+        "leps": "Двадцать один... Судьба раздаёт карты! Очко! Двадцать один!",
+        "baskov": "Двадцать один! Молодость! Романтика! Двадцать один!",
     },
     22: {
         "brezhnev": "Двадцать два... Двадцать второго июня... Помним... Двадцать два!",
@@ -571,6 +578,13 @@ LOTO_JOKES = {
         "pugacheva": "Тридцать три! Возраст Христа! Мудрость приходит! Тридцать три!",
         "vinni": "Тридцать три богатыря! Много! И все хотят мёда! Тридцать три!",
         "zhirinovsky": "Тридцать три! Богатыри! Сила русская! Тридцать три!",
+        "monetochka": "Тридцать три! Богатыри! Это типа русские супергерои! Тридцать три!",
+        "gorshok": "Тридцать три! Тридцать три несчастья! Ха-ха! Тридцать три!",
+        "vysotsky": "Тридцать три... Тридцать три богатыря за Родину стоят! Тридцать три!",
+        "shnurov": "Тридцать три! Скажи ааа! Горло проверяем! Тридцать три!",
+        "kirkorov": "Тридцать три! Тридцать три оттенка блеска! Тридцать три!",
+        "leps": "Тридцать три... Богатыри! Сила духа! Тридцать три!",
+        "baskov": "Тридцать три! Возраст гения! Моцарт творил! Тридцать три!",
     },
     34: {
         "brezhnev": "Тридцать четыре... Хороший возраст для работы... Тридцать четыре!",
@@ -634,6 +648,13 @@ LOTO_JOKES = {
         "pugacheva": "Сорок два! Автостопом по галактике! Космос! Сорок два!",
         "vinni": "Сорок два... Ответ на всё! Но какой был вопрос про мёд? Сорок два!",
         "zhirinovsky": "Сорок два! Главный ответ! Философия! Сорок два!",
+        "monetochka": "Сорок два! Ответ на всё! Дуглас Адамс вайб! Сорок два!",
+        "gorshok": "Сорок два! Ответ из бездны! Но вопрос потерян навсегда! Ха-ха! Сорок два!",
+        "vysotsky": "Сорок два... Ответ на главный вопрос... Но какой вопрос? Сорок два!",
+        "shnurov": "Сорок два! Смысл жизни! Спросите у компьютера! Сорок два!",
+        "kirkorov": "Сорок два! Ответ на вопрос о моём величии! Сорок два!",
+        "leps": "Сорок два... Ответ вселенной... Философия жизни! Сорок два!",
+        "baskov": "Сорок два! Гармония чисел! Ответ мудрости! Сорок два!",
     },
     43: {
         "brezhnev": "Сорок три... Сорок третий - год перелома в войне! Сорок три!",
@@ -655,6 +676,13 @@ LOTO_JOKES = {
         "pugacheva": "Сорок пять! Ягодка! И какая ягодка! Сочная! Сорок пять!",
         "vinni": "Сорок пять... Ягодка! Малинка! Вкусно! К чаю с мёдом! Сорок пять!",
         "zhirinovsky": "Сорок пять! Год Победы! Слава! Сорок пять!",
+        "monetochka": "Сорок пять! Баба ягодка! Но я ещё молодая! Сорок пять!",
+        "gorshok": "Сорок пять! Год Победы над злом! Ха-ха! Сорок пять!",
+        "vysotsky": "Сорок пять... Год Победы! Помним павших! Сорок пять!",
+        "shnurov": "Сорок пять! Ягодка опять! Не спрашивайте какая! Сорок пять!",
+        "kirkorov": "Сорок пять! Я как вино! Только лучше с годами! Сорок пять!",
+        "leps": "Сорок пять... Год Победы... Святое! Сорок пять!",
+        "baskov": "Сорок пять! Расцвет таланта! Ягодка! Сорок пять!",
     },
     46: {
         "brezhnev": "Сорок шесть... Хромосом у человека... Наука! Сорок шесть!",
@@ -690,6 +718,13 @@ LOTO_JOKES = {
         "pugacheva": "Пятьдесят! Юбилей! Золото! Бриллианты! Пятьдесят!",
         "vinni": "Пятьдесят... Полтинник! Круглое число! Как горшочек! Пятьдесят!",
         "zhirinovsky": "Пятьдесят! Полвека! Юбилей! Достижения! Пятьдесят!",
+        "monetochka": "Пятьдесят! Полтос! Юбилей! Праздник! Пятьдесят!",
+        "gorshok": "Пятьдесят! Полвека в этом мире! Или в том? Ха-ха! Пятьдесят!",
+        "vysotsky": "Пятьдесят... Полвека! Немало прожито! Пятьдесят!",
+        "shnurov": "Пятьдесят! Полтинник! На хорошую гулянку хватит! Пятьдесят!",
+        "kirkorov": "Пятьдесят! Полвека славы! Это только начало! Пятьдесят!",
+        "leps": "Пятьдесят... Полвека... Золотая дата! Пятьдесят!",
+        "baskov": "Пятьдесят! Золотой юбилей! Ода жизни! Пятьдесят!",
     },
     51: {
         "brezhnev": "Пятьдесят один... Один после юбилея... Работаем дальше! Пятьдесят один!",
@@ -802,6 +837,13 @@ LOTO_JOKES = {
         "pugacheva": "Шестьдесят шесть! Валенки-валенки! Эх, частушка! Шестьдесят шесть!",
         "vinni": "Шестьдесят шесть... Валенки тёплые! Зимой хорошо с мёдом! Шестьдесят шесть!",
         "zhirinovsky": "Шестьдесят шесть! Route 66! Америка! Но наши дороги лучше! Шестьдесят шесть!",
+        "monetochka": "Шестьдесят шесть! Route 66! Роуд трип вайб! Шестьдесят шесть!",
+        "gorshok": "Шестьдесят шесть! Почти число зверя! Ещё чуть-чуть! Ха-ха! Шестьдесят шесть!",
+        "vysotsky": "Шестьдесят шесть... Route 66! Дорога без конца! Шестьдесят шесть!",
+        "shnurov": "Шестьдесят шесть! Валенки! В них тепло! Шестьдесят шесть!",
+        "kirkorov": "Шестьдесят шесть! Шесть и шесть! Двойной шарм! Шестьдесят шесть!",
+        "leps": "Шестьдесят шесть... Дорога жизни! Route 66! Шестьдесят шесть!",
+        "baskov": "Шестьдесят шесть! Гармония чисел! Красота! Шестьдесят шесть!",
     },
     67: {
         "brezhnev": "Шестьдесят семь... Год юбилея революции... Помним! Шестьдесят семь!",
@@ -823,6 +865,13 @@ LOTO_JOKES = {
         "pugacheva": "Шестьдесят девять! Гармония! Симметрия! Красота! Шестьдесят девять!",
         "vinni": "Шестьдесят девять... Перевернёшь - то же самое! Забавно! Шестьдесят девять!",
         "zhirinovsky": "Шестьдесят девять! Симметрия! Баланс! Шестьдесят девять!",
+        "monetochka": "Шестьдесят девять! Ой, это тот самый мем! Найс! Шестьдесят девять!",
+        "gorshok": "Шестьдесят девять! Хе-хе! Переверни - всё равно шесть девять! Шестьдесят девять!",
+        "vysotsky": "Шестьдесят девять... Инь и янь! Баланс жизни! Шестьдесят девять!",
+        "shnurov": "Шестьдесят девять! Ну вы поняли! Найс! Шестьдесят девять!",
+        "kirkorov": "Шестьдесят девять! Симметрия красоты! Как я в зеркале! Шестьдесят девять!",
+        "leps": "Шестьдесят девять... Гармония противоположностей! Шестьдесят девять!",
+        "baskov": "Шестьдесят девять! Инь-янь! Философия! Шестьдесят девять!",
     },
     70: {
         "brezhnev": "Семьдесят... Платиновый юбилей... Награды! Ордена! Семьдесят!",
@@ -879,6 +928,13 @@ LOTO_JOKES = {
         "pugacheva": "Семьдесят семь! Удача! Везение! Звёзды сошлись! Семьдесят семь!",
         "vinni": "Семьдесят семь... Два топорика! Дрова для камина! Тепло! Семьдесят семь!",
         "zhirinovsky": "Семьдесят семь! Удача! Победа! Семьдесят семь!",
+        "monetochka": "Семьдесят семь! Две семёрки! Лаки! Удача! Семьдесят семь!",
+        "gorshok": "Семьдесят семь! Два топора! Рубим! Ха-ха! Семьдесят семь!",
+        "vysotsky": "Семьдесят семь... Топорики! Две удачи! Семьдесят семь!",
+        "shnurov": "Семьдесят семь! Джекпот! Две семёрки! Красота! Семьдесят семь!",
+        "kirkorov": "Семьдесят семь! Две семёрки! Двойная удача! Ария победы! Семьдесят семь!",
+        "leps": "Семьдесят семь... Счастливое число! Судьба улыбается! Семьдесят семь!",
+        "baskov": "Семьдесят семь! Две семёрки! Двойная удача! Семьдесят семь!",
     },
     78: {
         "brezhnev": "Семьдесят восемь... Оборотов у пластинки... Музыка! Семьдесят восемь!",
@@ -956,6 +1012,13 @@ LOTO_JOKES = {
         "pugacheva": "Восемьдесят восемь! Бесконечность дважды! Вечная! Восемьдесят восемь!",
         "vinni": "Восемьдесят восемь... Два бублика! Или две бабушки! Обе с пирожками! Восемьдесят восемь!",
         "zhirinovsky": "Восемьдесят восемь! Бесконечность! Вечность! Восемьдесят восемь!",
+        "monetochka": "Восемьдесят восемь! Две бесконечности! Вечный вайб! Восемьдесят восемь!",
+        "gorshok": "Восемьдесят восемь! Два бублика! Или два черепа! Ха-ха! Восемьдесят восемь!",
+        "vysotsky": "Восемьдесят восемь... Бесконечность! Вечная дорога! Восемьдесят восемь!",
+        "shnurov": "Восемьдесят восемь! Две восьмёрки! Как два колеса! Поехали! Восемьдесят восемь!",
+        "kirkorov": "Восемьдесят восемь! Бесконечность славы! Дважды! Восемьдесят восемь!",
+        "leps": "Восемьдесят восемь... Две бесконечности! Вечная музыка! Восемьдесят восемь!",
+        "baskov": "Восемьдесят восемь! Вечность! Бесконечная красота! Восемьдесят восемь!",
     },
     89: {
         "brezhnev": "Восемьдесят девять... Стена упала... Перемены! Восемьдесят девять!",
@@ -970,6 +1033,13 @@ LOTO_JOKES = {
         "pugacheva": "Девяносто! Дед! Патриарх! Легенда! Уважение! Девяносто!",
         "vinni": "Девяносто... Дедушка! Самый мудрый! Знает всё про мёд! Девяносто!",
         "zhirinovsky": "Девяносто! Патриарх! Уважение! Почёт! Девяносто!",
+        "monetochka": "Девяносто! Самый большой! Респект! Девяносто!",
+        "gorshok": "Девяносто! Последний! Финал! Занавес падает! Ха-ха! Девяносто!",
+        "vysotsky": "Девяносто... Дедушка! Мудрость веков! Девяносто!",
+        "shnurov": "Девяносто! Дедушка! Самый главный! Уважаем! Девяносто!",
+        "kirkorov": "Девяносто! Патриарх чисел! Как я на сцене! Девяносто!",
+        "leps": "Девяносто... Дедушка! Легенда! Вечность! Девяносто!",
+        "baskov": "Девяносто! Патриарх! Великий финал! Браво! Девяносто!",
     },
 }
 
@@ -1156,9 +1226,18 @@ async def speak_edge_tts(text: str, temp_dir: Path, voice: str, rate: str, pitch
         await asyncio.sleep(0.1)
 
 
-def speak_qwen_tts_clone(text: str, model, voice_prompt, temp_dir: Path) -> None:
+def play_audio(audio_path: str) -> None:
+    """Play audio file and wait for completion."""
+    pygame.mixer.music.load(audio_path)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():
+        time.sleep(0.1)
+
+
+def speak_qwen_tts_clone(text: str, model, voice_prompt, temp_dir: Path, return_path: bool = False) -> Optional[Path]:
     """Generate and play speech using Qwen3-TTS voice cloning."""
-    audio_file = temp_dir / "speech.wav"
+    import uuid
+    audio_file = temp_dir / f"speech_{uuid.uuid4().hex[:8]}.wav"
 
     wavs, sr = model.generate_voice_clone(
         text=text,
@@ -1167,17 +1246,17 @@ def speak_qwen_tts_clone(text: str, model, voice_prompt, temp_dir: Path) -> None
     )
     sf.write(str(audio_file), wavs[0], sr)
 
-    pygame.mixer.music.load(str(audio_file))
-    pygame.mixer.music.play()
+    if return_path:
+        return audio_file
 
-    while pygame.mixer.music.get_busy():
-        import time
-        time.sleep(0.1)
+    play_audio(str(audio_file))
+    return None
 
 
-def speak_qwen_tts_design(text: str, model, voice_instruct: str, temp_dir: Path) -> None:
+def speak_qwen_tts_design(text: str, model, voice_instruct: str, temp_dir: Path, return_path: bool = False) -> Optional[Path]:
     """Generate and play speech using Qwen3-TTS voice design."""
-    audio_file = temp_dir / "speech.wav"
+    import uuid
+    audio_file = temp_dir / f"speech_{uuid.uuid4().hex[:8]}.wav"
 
     wavs, sr = model.generate_voice_design(
         text=text,
@@ -1186,12 +1265,11 @@ def speak_qwen_tts_design(text: str, model, voice_instruct: str, temp_dir: Path)
     )
     sf.write(str(audio_file), wavs[0], sr)
 
-    pygame.mixer.music.load(str(audio_file))
-    pygame.mixer.music.play()
+    if return_path:
+        return audio_file
 
-    while pygame.mixer.music.get_busy():
-        import time
-        time.sleep(0.1)
+    play_audio(str(audio_file))
+    return None
 
 
 async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2.0,
@@ -1278,8 +1356,41 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
             print("Falling back to edge-tts...")
             model = None
 
+    # Cache for pre-generated audio
+    audio_cache = {}
+
+    def generate_audio_sync(text: str, char: str, char_info: dict, temp_path: Path) -> Optional[Path]:
+        """Generate audio file synchronously (for prefetching). Returns audio file path."""
+        if model and char in voice_prompts:
+            if model_type == "design":
+                return speak_qwen_tts_design(text, model, voice_prompts[char], temp_path, return_path=True)
+            else:
+                return speak_qwen_tts_clone(text, model, voice_prompts[char], temp_path, return_path=True)
+        return None
+
+    async def prefetch_audio(text: str, char: str, char_info: dict, temp_path: Path):
+        """Prefetch audio in background thread."""
+        cache_key = (text, char)
+        if cache_key in audio_cache:
+            return
+
+        loop = asyncio.get_event_loop()
+        path = await loop.run_in_executor(None, generate_audio_sync, text, char, char_info, temp_path)
+        if path:
+            audio_cache[cache_key] = path
+
     async def speak(text: str, char: str, char_info: dict, temp_path: Path):
         """Helper to speak with current voice settings."""
+        cache_key = (text, char)
+
+        # Check if we have prefetched audio
+        if cache_key in audio_cache:
+            audio_path = audio_cache.pop(cache_key)
+            if audio_path and audio_path.exists():
+                play_audio(str(audio_path))
+                return
+
+        # Generate and play
         if model and char in voice_prompts:
             if model_type == "design":
                 speak_qwen_tts_design(text, model, voice_prompts[char], temp_path)
@@ -1356,6 +1467,20 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
         last_char = None
         last_char_info = None
 
+        # Helper to determine next phrase and character
+        def get_phrase_for_number(idx: int, num: int, jokes_since: int, joke_threshold: int):
+            """Get phrase and character info for a number."""
+            will_joke = jokes_since >= joke_threshold
+            if will_joke:
+                next_char_idx = (char_index + 1) % len(characters)
+                next_char = characters[next_char_idx]
+                next_char_info = CELEBRITY_VOICES[next_char]
+                jokes = LOTO_JOKES.get(num, {})
+                phrase = jokes.get(next_char, SIMPLE_NUMBERS[num])
+                return phrase, next_char, next_char_info, True
+            else:
+                return SIMPLE_NUMBERS[num], char, char_info, False
+
         for i, num in enumerate(numbers_to_call, 1):
             numbers_since_joke += 1
             use_joke = numbers_since_joke >= next_joke_at
@@ -1396,13 +1521,30 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
                 # Try to get attention
                 await get_attention(temp_path, char, char_info)
 
-            # Delays
+            # Prefetch next number's audio during delay
             if i < count:
+                next_num = numbers_to_call[i]  # i is already 1-indexed, so this is next
+                next_phrase, next_char, next_char_info, _ = get_phrase_for_number(
+                    i + 1, next_num, numbers_since_joke + 1, next_joke_at
+                )
+
+                # Start prefetch in background
+                prefetch_task = asyncio.create_task(
+                    prefetch_audio(next_phrase, next_char, next_char_info, temp_path)
+                )
+
+                # Delay (prefetch runs in parallel)
                 if i % 10 == 0:
                     print(f"\n  --- Пауза после {i} номеров ---\n")
                     await asyncio.sleep(4.0)
                 else:
                     await asyncio.sleep(random.uniform(delay_min, delay_max))
+
+                # Ensure prefetch completes
+                try:
+                    await asyncio.wait_for(prefetch_task, timeout=0.1)
+                except asyncio.TimeoutError:
+                    pass  # Prefetch still running, that's OK
 
         # Closing
         await asyncio.sleep(1.5)
