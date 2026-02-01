@@ -42,3 +42,7 @@ Thumbs.db
 # Temp audio files
 *.mp3
 *.wav
+
+# ML models (large files)
+models/
+Qwen3-TTS/
