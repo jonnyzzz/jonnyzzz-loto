@@ -9,11 +9,21 @@ import asyncio
 import random
 import tempfile
 import os
+import time
+import threading
 from pathlib import Path
 from typing import Optional
 import requests
 
+import numpy as np
 import pygame
+
+# Try to import PyAudio for microphone listening
+try:
+    import pyaudio
+    PYAUDIO_AVAILABLE = True
+except ImportError:
+    PYAUDIO_AVAILABLE = False
 
 # Try to import Qwen TTS, fall back to edge-tts if not available
 try:
@@ -750,6 +760,134 @@ TRANSITION_PHRASES = {
     "zhirinovsky": ["Дальше!", "Следующий!", "Так!", "Внимание!"],
 }
 
+# Attention-getting jokes when room is noisy (20+ jokes by character)
+ATTENTION_JOKES = {
+    "brezhnev": [
+        "Товарищи! Тишина в зале! Это не митинг!",
+        "Дорогие друзья, прошу внимания! Партия ждёт!",
+        "Товарищи, соблюдаем дисциплину! Как на съезде!",
+        "Шум недопустим! Работаем, товарищи!",
+        "Тише, товарищи! Это серьёзное мероприятие!",
+    ],
+    "galkin": [
+        "Эй-эй-эй! Тише! Я здесь главная звезда!",
+        "Ау! Вы меня слышите? Или мне петь начать?",
+        "Народ, потише! Шоу продолжается!",
+        "Эй, на галёрке! Тишина!",
+        "Та-дам! Внимание на сцену! Я жду!",
+        "Секундочку! Кто тут шумит? Выйти из зала!",
+        "Публика, внимание! Сейчас будет самое интересное!",
+    ],
+    "pugacheva": [
+        "Так, мои дорогие! Тишина! Примадонна говорит!",
+        "Эй! Я здесь пою или вы? Тихо!",
+        "Милые мои, потише! Я теряю голос от вашего шума!",
+        "Так, кто там шумит? Автограф потом!",
+        "Дорогие, внимание! Это не базар!",
+    ],
+    "vinni": [
+        "Ой-ой-ой! Как шумно! У меня от шума опилки из головы сыпятся!",
+        "Друзья, потише! Пчёлы могут услышать и прилететь!",
+        "Тише-тише! Кролик нервничает от такого шума!",
+        "Ребята, давайте потише? Мёд любит тишину!",
+        "Ой, как громко! Даже Иа-Иа бы расстроился!",
+        "Пух-пух-пух! Тихо! Я забыл какой номер был!",
+    ],
+    "zhirinovsky": [
+        "Тихо! Я сказал тихо! Это безобразие!",
+        "Хватит шуметь! Слушайте сюда!",
+        "Это что за балаган?! Тишина немедленно!",
+        "Я требую тишины! Немедленно!",
+        "Так! Кто шумит - выйти вон! Я серьёзно!",
+        "Это недопустимо! Где дисциплина?!",
+        "Слушайте меня внимательно! Хватит болтать!",
+    ],
+}
+
+# Starting attention message
+START_ATTENTION_MESSAGE = {
+    "brezhnev": "Дорогие товарищи! Прошу тишины! Начинается важное мероприятие! Лотерея!",
+    "galkin": "Внимание-внимание! Дамы и господа! Прошу тишины! Начинается грандиозное шоу! Русское Лото!",
+    "pugacheva": "Мои дорогие! Тишина в зале! Примадонна начинает! Это будет незабываемо!",
+    "vinni": "Друзья! А не замолчать ли нам? Начинается игра в лото! Кто ходит в гости по утрам... Ой, не то!",
+    "zhirinovsky": "Так! Всем замолчать! Я сказал - тишина! Начинается лотерея! Слушать внимательно!",
+}
+
+
+class NoiseMonitor:
+    """Monitor room noise level using microphone."""
+
+    def __init__(self, threshold: float = 500, sample_rate: int = 44100, chunk_size: int = 1024):
+        self.threshold = threshold
+        self.sample_rate = sample_rate
+        self.chunk_size = chunk_size
+        self.is_noisy = False
+        self.current_level = 0
+        self._running = False
+        self._thread = None
+        self._pyaudio = None
+        self._stream = None
+
+    def start(self):
+        """Start monitoring noise in background thread."""
+        if not PYAUDIO_AVAILABLE:
+            print("  [Микрофон недоступен - режим без прослушивания]")
+            return False
+
+        try:
+            self._pyaudio = pyaudio.PyAudio()
+            self._stream = self._pyaudio.open(
+                format=pyaudio.paInt16,
+                channels=1,
+                rate=self.sample_rate,
+                input=True,
+                frames_per_buffer=self.chunk_size,
+            )
+            self._running = True
+            self._thread = threading.Thread(target=self._monitor_loop, daemon=True)
+            self._thread.start()
+            print("  [Микрофон активен - слушаю комнату]")
+            return True
+        except Exception as e:
+            print(f"  [Ошибка микрофона: {e}]")
+            return False
+
+    def stop(self):
+        """Stop monitoring."""
+        self._running = False
+        if self._stream:
+            self._stream.stop_stream()
+            self._stream.close()
+        if self._pyaudio:
+            self._pyaudio.terminate()
+
+    def _monitor_loop(self):
+        """Background loop to monitor noise levels."""
+        while self._running:
+            try:
+                data = self._stream.read(self.chunk_size, exception_on_overflow=False)
+                audio_data = np.frombuffer(data, dtype=np.int16)
+                self.current_level = np.abs(audio_data).mean()
+                self.is_noisy = self.current_level > self.threshold
+            except Exception:
+                pass
+            time.sleep(0.1)
+
+    def wait_for_quiet(self, timeout: float = 60.0, check_interval: float = 0.5) -> bool:
+        """Wait until room is quiet or timeout. Returns True if quiet, False if timeout."""
+        if not self._running:
+            return True  # No monitoring, assume quiet
+
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            if not self.is_noisy:
+                # Wait a bit more to confirm it's really quiet
+                time.sleep(0.3)
+                if not self.is_noisy:
+                    return True
+            time.sleep(check_interval)
+        return False
+
 
 async def speak_edge_tts(text: str, temp_dir: Path, voice: str, rate: str) -> None:
     """Generate and play speech using edge-tts (fallback)."""
@@ -785,8 +923,9 @@ def speak_qwen_tts(text: str, model, voice_prompt, temp_dir: Path) -> None:
         time.sleep(0.1)
 
 
-async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2.0, use_qwen: bool = False) -> None:
-    """Run the loto game with celebrity voices."""
+async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2.0,
+                   use_qwen: bool = False, listen_mode: bool = False, noise_threshold: float = 500) -> None:
+    """Run the loto game with celebrity voices and optional noise monitoring."""
     pygame.mixer.init()
 
     # Character rotation
@@ -794,6 +933,12 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
     char_index = 0
     numbers_since_joke = 0
     next_joke_at = random.randint(3, 5)
+
+    # Noise monitor for listen mode
+    noise_monitor = None
+    if listen_mode:
+        noise_monitor = NoiseMonitor(threshold=noise_threshold)
+        noise_monitor.start()
 
     # Initialize Qwen TTS if requested and available
     model = None
@@ -809,12 +954,9 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
             )
             print("Model loaded! Creating voice prompts...")
 
-            # Create voice prompts for each character
             for char_id, char_info in CELEBRITY_VOICES.items():
-                # For now, we use the sample text as a pseudo-reference
-                # In production, you'd download actual audio samples
                 voice_prompts[char_id] = model.create_voice_clone_prompt(
-                    ref_audio=None,  # Would need actual audio file
+                    ref_audio=None,
                     ref_text=char_info["sample_text"],
                     x_vector_only_mode=True,
                 )
@@ -824,21 +966,67 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
             print("Falling back to edge-tts...")
             model = None
 
+    async def speak(text: str, char: str, char_info: dict, temp_path: Path):
+        """Helper to speak with current voice settings."""
+        if model and char in voice_prompts:
+            speak_qwen_tts(text, model, voice_prompts[char], temp_path)
+        else:
+            await speak_edge_tts(text, temp_path, char_info["edge_voice"], char_info["edge_rate"])
+
+    async def get_attention(temp_path: Path, char: str, char_info: dict) -> bool:
+        """Try to get room's attention with exponential backoff. Returns True if quiet achieved."""
+        if not noise_monitor or not noise_monitor._running:
+            return True
+
+        backoff = 1.0  # Start with 1 second
+        max_backoff = 60.0  # Max 1 minute
+        attempts = 0
+
+        while noise_monitor.is_noisy and backoff <= max_backoff:
+            attempts += 1
+            # Pick a random attention joke
+            joke = random.choice(ATTENTION_JOKES.get(char, ATTENTION_JOKES["galkin"]))
+            print(f"  🔊 [Шумно! Уровень: {noise_monitor.current_level:.0f}] [{char_info['name']}] {joke}")
+            await speak(joke, char, char_info, temp_path)
+
+            # Wait with exponential backoff
+            print(f"  ⏳ Ждём тишины... (попытка {attempts}, ожидание {backoff:.1f}с)")
+            quiet = noise_monitor.wait_for_quiet(timeout=backoff)
+            if quiet:
+                print("  ✓ Тишина!")
+                return True
+
+            # Increase backoff
+            backoff = min(backoff * 2, max_backoff)
+
+            # Switch character for variety
+            nonlocal char_index
+            char_index = (char_index + 1) % len(characters)
+            char = characters[char_index]
+            char_info = CELEBRITY_VOICES[char]
+
+        return not noise_monitor.is_noisy
+
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
 
-        # Welcome message
+        # Starting attention message
         char = characters[char_index]
         char_info = CELEBRITY_VOICES[char]
+
+        if listen_mode:
+            start_msg = START_ATTENTION_MESSAGE[char]
+            print(f"\n📢 [{char_info['name']}] {start_msg}\n")
+            await speak(start_msg, char, char_info, temp_path)
+            await asyncio.sleep(2.0)
+
+            # Wait for initial quiet
+            await get_attention(temp_path, char, char_info)
+
+        # Welcome message
         intro = random.choice(INTRO_PHRASES[char])
-
         print(f"\n🎰 [{char_info['name']}] {intro}\n")
-
-        if model and char in voice_prompts:
-            speak_qwen_tts(intro, model, voice_prompts[char], temp_path)
-        else:
-            await speak_edge_tts(intro, temp_path, char_info["edge_voice"], char_info["edge_rate"])
-
+        await speak(intro, char, char_info, temp_path)
         await asyncio.sleep(2.0)
 
         # Generate random numbers
@@ -847,18 +1035,20 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
         numbers_to_call = all_numbers[:count]
 
         called = []
+        last_number = None
+        last_phrase = None
+        last_char = None
+        last_char_info = None
 
         for i, num in enumerate(numbers_to_call, 1):
             numbers_since_joke += 1
             use_joke = numbers_since_joke >= next_joke_at
 
             if use_joke:
-                # Switch character for joke
                 char_index = (char_index + 1) % len(characters)
                 char = characters[char_index]
                 char_info = CELEBRITY_VOICES[char]
 
-                # Get character-specific joke
                 jokes = LOTO_JOKES.get(num, {})
                 phrase = jokes.get(char, SIMPLE_NUMBERS[num])
 
@@ -870,15 +1060,25 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
                 phrase = SIMPLE_NUMBERS[num]
                 print(f"  [{i:2d}/{count}] 🎱 {num:2d} - {phrase}")
 
-            # Speak
-            if model and use_joke and char in voice_prompts:
-                speak_qwen_tts(phrase, model, voice_prompts[char], temp_path)
-            else:
-                voice = char_info["edge_voice"] if use_joke else CELEBRITY_VOICES["galkin"]["edge_voice"]
-                rate = char_info["edge_rate"] if use_joke else "+0%"
-                await speak_edge_tts(phrase, temp_path, voice, rate)
+            await speak(phrase, char, char_info, temp_path)
+
+            # Save for potential repeat
+            last_number = num
+            last_phrase = phrase
+            last_char = char
+            last_char_info = char_info
 
             called.append(num)
+
+            # Check for noise and handle it
+            if listen_mode and noise_monitor and noise_monitor.is_noisy:
+                print(f"\n  🔊 Обнаружен шум! Повторяю последний номер...")
+                repeat_phrase = f"Повторяю! {last_phrase}"
+                print(f"  🔁 [{last_char_info['name']}] {repeat_phrase}")
+                await speak(repeat_phrase, last_char, last_char_info, temp_path)
+
+                # Try to get attention
+                await get_attention(temp_path, char, char_info)
 
             # Delays
             if i < count:
@@ -894,14 +1094,13 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
         char_info = CELEBRITY_VOICES[char]
         closing = "Все номера названы! Проверяйте карточки! Кто выиграл?"
         print(f"\n🏆 [{char_info['name']}] {closing}")
-
-        if model and char in voice_prompts:
-            speak_qwen_tts(closing, model, voice_prompts[char], temp_path)
-        else:
-            await speak_edge_tts(closing, temp_path, char_info["edge_voice"], char_info["edge_rate"])
+        await speak(closing, char, char_info, temp_path)
 
         print(f"\n📋 Выпавшие номера: {', '.join(map(str, sorted(called)))}")
 
+    # Cleanup
+    if noise_monitor:
+        noise_monitor.stop()
     pygame.mixer.quit()
 
 
@@ -918,6 +1117,10 @@ def main():
                         help="Максимальная задержка между числами (по умолчанию: 2.0)")
     parser.add_argument("--qwen", action="store_true",
                         help="Использовать Qwen3-TTS для клонирования голосов (требует GPU)")
+    parser.add_argument("--listen", action="store_true",
+                        help="Слушать комнату и реагировать на шум (повторять номера, шутить)")
+    parser.add_argument("--noise-threshold", type=float, default=500,
+                        help="Порог шума для реакции (по умолчанию: 500)")
 
     args = parser.parse_args()
 
@@ -931,6 +1134,9 @@ def main():
     print(f"  Количество чисел: {args.count}")
     print(f"  Задержка: {args.min_delay}-{args.max_delay} сек")
     print(f"  Qwen TTS: {'Да' if args.qwen and QWEN_AVAILABLE else 'Нет (edge-tts)'}")
+    print(f"  Режим прослушивания: {'Да' if args.listen else 'Нет'}")
+    if args.listen:
+        print(f"  Порог шума: {args.noise_threshold}")
     print("=" * 60)
 
     try:
@@ -939,6 +1145,8 @@ def main():
             delay_min=args.min_delay,
             delay_max=args.max_delay,
             use_qwen=args.qwen,
+            listen_mode=args.listen,
+            noise_threshold=args.noise_threshold,
         ))
     except KeyboardInterrupt:
         print("\n\n👋 Игра прервана. До свидания!")
