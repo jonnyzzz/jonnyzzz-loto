@@ -19,6 +19,9 @@ qwen = [
 listen = [
     "pyaudio>=0.2.14",
 ]
+fish = [
+    "fish-audio-sdk>=1.0.0",
+]
 
 [project.scripts]
 loto = "loto:main"

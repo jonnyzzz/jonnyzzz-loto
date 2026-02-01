@@ -26,57 +26,86 @@ except ImportError:
     PYAUDIO_AVAILABLE = False
 
 # Try to import Qwen TTS, fall back to edge-tts if not available
+QWEN_AVAILABLE = False
+QWEN_DEVICE = "cpu"
+QWEN_DTYPE = None
+
 try:
     import torch
     import soundfile as sf
     from qwen_tts import Qwen3TTSModel
     QWEN_AVAILABLE = True
+
+    # Determine best device for Mac
+    if torch.backends.mps.is_available():
+        QWEN_DEVICE = "mps"
+        QWEN_DTYPE = torch.float32  # MPS requires float32 for voice cloning
+        print("  [Qwen TTS: Apple Silicon MPS detected]")
+    elif torch.cuda.is_available():
+        QWEN_DEVICE = "cuda:0"
+        QWEN_DTYPE = torch.bfloat16
+        print("  [Qwen TTS: NVIDIA CUDA detected]")
+    else:
+        QWEN_DEVICE = "cpu"
+        QWEN_DTYPE = torch.float32
+        print("  [Qwen TTS: CPU mode (slow)]")
 except ImportError:
-    QWEN_AVAILABLE = False
     import edge_tts
 
 # Celebrity voice samples - short clips for voice cloning
 # Each celebrity has a sample URL and transcript for better cloning
+# Voice samples should be placed in ./voices/ directory
+VOICES_DIR = Path(__file__).parent / "voices"
+
 CELEBRITY_VOICES = {
     "brezhnev": {
         "name": "Леонид Брежнев",
         "description": "Генеральный секретарь, медленная речь с паузами",
-        # Famous "Дорогие товарищи" speech style
         "sample_text": "Дорогие товарищи! Сегодня мы собрались здесь, чтобы отметить этот знаменательный день.",
+        "sample_file": "brezhnev.mp3",  # Place your sample in ./voices/
         "edge_voice": "ru-RU-DmitryNeural",
-        "edge_rate": "-20%",  # Slow, deliberate
+        "edge_rate": "-30%",  # Very slow, deliberate
+        "edge_pitch": "-10Hz",  # Lower pitch
         "style": "soviet_leader",
     },
     "galkin": {
         "name": "Максим Галкин",
         "description": "Пародист, шоумен, энергичный и театральный",
         "sample_text": "Дамы и господа! А сейчас будет самое интересное! Внимание!",
+        "sample_file": "galkin.mp3",
         "edge_voice": "ru-RU-DmitryNeural",
-        "edge_rate": "+15%",  # Energetic
+        "edge_rate": "+20%",  # Fast, energetic
+        "edge_pitch": "+5Hz",  # Slightly higher
         "style": "showman",
     },
     "pugacheva": {
         "name": "Алла Пугачёва",
         "description": "Примадонна российской эстрады, дива",
         "sample_text": "Ну что, мои дорогие? Начинаем! Это будет незабываемо!",
-        "edge_voice": "ru-RU-SvetlanaNeural",
+        "sample_file": "pugacheva.mp3",
+        "edge_voice": "ru-RU-SvetlanaNeural",  # Female voice
         "edge_rate": "+5%",
+        "edge_pitch": "+0Hz",
         "style": "diva",
     },
     "vinni": {
         "name": "Винни-Пух (Евгений Леонов)",
         "description": "Советский мультфильм, добродушный медвежонок",
-        "sample_text": "Кто ходит в гости по утрам, тот поступает мудро. Тарам-парам, тарам-парам, на то оно и утро.",
+        "sample_text": "Кто ходит в гости по утрам, тот поступает мудро.",
+        "sample_file": "vinni.mp3",
         "edge_voice": "ru-RU-DmitryNeural",
-        "edge_rate": "-10%",  # Thoughtful, slow
+        "edge_rate": "-15%",  # Slow, thoughtful
+        "edge_pitch": "-5Hz",  # Warm, lower
         "style": "bear",
     },
     "zhirinovsky": {
         "name": "Владимир Жириновский",
         "description": "Политик, экспрессивный оратор",
         "sample_text": "Я вам так скажу! Это безобразие! Хватит это терпеть!",
+        "sample_file": "zhirinovsky.mp3",
         "edge_voice": "ru-RU-DmitryNeural",
-        "edge_rate": "+25%",  # Fast, passionate
+        "edge_rate": "+30%",  # Very fast, passionate
+        "edge_pitch": "+10Hz",  # Higher, more intense
         "style": "politician",
     },
 }
@@ -889,12 +918,12 @@ class NoiseMonitor:
         return False
 
 
-async def speak_edge_tts(text: str, temp_dir: Path, voice: str, rate: str) -> None:
+async def speak_edge_tts(text: str, temp_dir: Path, voice: str, rate: str, pitch: str = "+0Hz") -> None:
     """Generate and play speech using edge-tts (fallback)."""
     import edge_tts
 
     audio_file = temp_dir / "speech.mp3"
-    communicate = edge_tts.Communicate(text, voice, rate=rate)
+    communicate = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch)
     await communicate.save(str(audio_file))
 
     pygame.mixer.music.load(str(audio_file))
@@ -945,21 +974,37 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
     voice_prompts = {}
 
     if use_qwen and QWEN_AVAILABLE:
-        print("Loading Qwen3-TTS model... (this may take a moment)")
+        print(f"Loading Qwen3-TTS model on {QWEN_DEVICE}... (this may take a moment)")
         try:
+            # Use smaller model for faster loading, or full model for better quality
+            model_name = "Qwen/Qwen3-TTS-12Hz-0.6B-Base"  # Smaller, faster
+            # model_name = "Qwen/Qwen3-TTS-12Hz-1.7B-Base"  # Larger, better quality
+
             model = Qwen3TTSModel.from_pretrained(
-                "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
-                device_map="cuda:0" if torch.cuda.is_available() else "cpu",
-                dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
+                model_name,
+                device_map=QWEN_DEVICE,
+                dtype=QWEN_DTYPE,
+                attn_implementation="sdpa",  # Works on Mac (no FlashAttention)
             )
-            print("Model loaded! Creating voice prompts...")
+            print(f"Model {model_name} loaded! Creating voice prompts...")
 
             for char_id, char_info in CELEBRITY_VOICES.items():
-                voice_prompts[char_id] = model.create_voice_clone_prompt(
-                    ref_audio=None,
-                    ref_text=char_info["sample_text"],
-                    x_vector_only_mode=True,
-                )
+                # Check for voice sample file
+                sample_file = VOICES_DIR / char_info.get("sample_file", f"{char_id}.mp3")
+                if sample_file.exists():
+                    print(f"  Loading voice sample for {char_info['name']} from {sample_file}")
+                    voice_prompts[char_id] = model.create_voice_clone_prompt(
+                        ref_audio=str(sample_file),
+                        ref_text=char_info["sample_text"],
+                        x_vector_only_mode=False,  # Use full cloning with audio
+                    )
+                else:
+                    print(f"  No voice sample for {char_info['name']}, using text-only mode")
+                    voice_prompts[char_id] = model.create_voice_clone_prompt(
+                        ref_audio=None,
+                        ref_text=char_info["sample_text"],
+                        x_vector_only_mode=True,
+                    )
             print("Voice prompts ready!")
         except Exception as e:
             print(f"Qwen TTS failed to load: {e}")
@@ -971,7 +1016,8 @@ async def run_loto(count: int = 90, delay_min: float = 1.0, delay_max: float = 2
         if model and char in voice_prompts:
             speak_qwen_tts(text, model, voice_prompts[char], temp_path)
         else:
-            await speak_edge_tts(text, temp_path, char_info["edge_voice"], char_info["edge_rate"])
+            pitch = char_info.get("edge_pitch", "+0Hz")
+            await speak_edge_tts(text, temp_path, char_info["edge_voice"], char_info["edge_rate"], pitch)
 
     async def get_attention(temp_path: Path, char: str, char_info: dict) -> bool:
         """Try to get room's attention with exponential backoff. Returns True if quiet achieved."""
